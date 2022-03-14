@@ -1,9 +1,11 @@
 package com.nttdata.fees.service;
 
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import com.nttdata.fees.dto.request.FeeRequest;
 import com.nttdata.fees.entity.Fee;
+import com.nttdata.fees.exceptions.custom.CustomNotFoundException;
 import com.nttdata.fees.repository.FeesRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -17,20 +19,23 @@ public class FeesServiceImpl implements FeesService{
 
 	@Override
 	public Flux<Fee> listByIdTransaction(String idTransaction) {
-		// TODO Auto-generated method stub
-		return null;
+		return feesRepository.findByIdTransaction(idTransaction);
 	}
 
 	@Override
 	public Flux<Fee> listByProductNumber(String productNumber) {
-		// TODO Auto-generated method stub
-		return null;
+		return feesRepository.findByProductNumber(productNumber);
 	}
 
 	@Override
 	public Flux<Fee> listByClientDocumentNumber(String clientDocumentNumber) {
-		// TODO Auto-generated method stub
-		return null;
+		return feesRepository.findByClientDocumentNumber(clientDocumentNumber);
+	}
+	
+	@Override
+	public Mono<Fee> findFeeById(String id) {
+		return feesRepository.findById(new ObjectId(id))
+				.switchIfEmpty(Mono.error(new CustomNotFoundException("Client not found")));
 	}
 
 	@Override
@@ -50,5 +55,7 @@ public class FeesServiceImpl implements FeesService{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	
 
 }

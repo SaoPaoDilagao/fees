@@ -11,6 +11,7 @@ public interface FeesService {
 	Flux<Fee> listByIdTransaction(String idTransaction);
 	Flux<Fee> listByProductNumber(String productNumber);
 	Flux<Fee> listByClientDocumentNumber(String clientDocumentNumber);
+	Mono<Fee> findFeeById(String id);
 	Mono<Void> deleteFees(FeeRequest request);
 	Mono<Void> createFees(FeeRequest request);
 	Mono<Void> updateFee(FeeRequest request);
