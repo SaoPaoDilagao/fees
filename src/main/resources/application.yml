@@ -1,0 +1,19 @@
+server:
+  port: '8093'
+
+spring:
+  profiles:
+    active: local
+  application:
+    name: fees
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    shutdown:
+      enabled: 'true'
+    restart:
+      enabled: 'true'

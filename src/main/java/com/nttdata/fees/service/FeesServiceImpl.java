@@ -1,5 +1,11 @@
 package com.nttdata.fees.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
@@ -46,8 +52,51 @@ public class FeesServiceImpl implements FeesService{
 
 	@Override
 	public Mono<Void> createFees(FeeRequest request) {
+		
+		Fee fee;
+		
+		List<Fee> feesList = new ArrayList<Fee>();
+		
+		int paymentdayOfFee = 26;
+		BigDecimal rateAmount = calculateRateAmount(request);
+		LocalDateTime paymentBaseDate = calculateBaseDateRate(paymentdayOfFee);
+				
+		for(int i=0; i<request.getNumberOfFees(); i++) {
+			fee = new Fee();
+			fee.setAmount(rateAmount);
+			fee.setExpirationDate(paymentBaseDate.plusMonths((long)(i+1)));
+			fee.setClientDocumentNumber(request.getClientDocumentNumber());
+			fee.setIdTransaction(request.getIdTransaction());
+			fee.setProductNumber(request.getProductNumber());
+			fee.setStatus(0); // pending
+			
+			feesList.add(fee);
+		}
+		
+		feesRepository.saveAll(feesList);
+		
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private BigDecimal calculateRateAmount(FeeRequest request) {
+		
+		BigDecimal singleAmount = request.getAmount()
+				.divide(new BigDecimal(request.getNumberOfFees()));
+		BigDecimal singleInterest = singleAmount
+						.multiply(request.getPercentageInterestRate())
+						.divide(new BigDecimal("100.0"));
+		return singleAmount.add(singleInterest);
+	}
+	
+	private LocalDateTime calculateBaseDateRate(int paymentDay) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		LocalDateTime current = LocalDateTime.now();
+		current.format(formatter);
+		int month =  current.getMonthValue();
+		int year = current.getYear();
+		String temp = String.valueOf(paymentDay) +"/"+month+"/"+year;
+		return LocalDateTime.parse(temp,formatter);
 	}
 
 	@Override

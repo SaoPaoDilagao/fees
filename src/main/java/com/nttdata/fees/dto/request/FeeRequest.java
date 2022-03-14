@@ -23,6 +23,6 @@ public class FeeRequest {
 	@Field(targetType = FieldType.DECIMAL128)
 	private BigDecimal amount;
 	@Field(targetType = FieldType.DECIMAL128)
-	private BigDecimal interestRate;
+	private BigDecimal percentageInterestRate;
 
 }
