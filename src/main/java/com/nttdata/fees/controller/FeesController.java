@@ -54,9 +54,9 @@ public class FeesController {
 		return feesServices.createFees(request);
 	}
 	
-	@DeleteMapping("/delete")
-	Mono<Void> deleteFees(@RequestBody FeeRequest request){
-		return feesServices.deleteFees(request);
+	@DeleteMapping("/delete/{idTransaction}")
+	Mono<Void> deleteFees(@PathVariable("idTransaction") String idTransaction){
+		return feesServices.deleteFees(idTransaction);
 	}
 	
 	@PutMapping("/update")

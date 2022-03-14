@@ -45,9 +45,23 @@ public class FeesServiceImpl implements FeesService{
 	}
 
 	@Override
-	public Mono<Void> deleteFees(FeeRequest request) {
-		// TODO Auto-generated method stub
-		return null;
+	public Mono<Void> deleteFees(String idTransaction) {
+		Flux<Fee> result = listByIdTransaction(idTransaction);
+		
+		List<ObjectId> ids = new ArrayList<ObjectId>();
+		
+		result.flatMap(item -> {
+			
+			ids.add(item.getId());
+			
+			return Mono.empty();
+			
+		});
+		
+		
+		feesRepository.deleteAllById(ids);
+		
+		return Mono.empty();
 	}
 
 	@Override
@@ -75,8 +89,7 @@ public class FeesServiceImpl implements FeesService{
 		
 		feesRepository.saveAll(feesList);
 		
-		// TODO Auto-generated method stub
-		return null;
+		return Mono.empty();
 	}
 	
 	private BigDecimal calculateRateAmount(FeeRequest request) {
