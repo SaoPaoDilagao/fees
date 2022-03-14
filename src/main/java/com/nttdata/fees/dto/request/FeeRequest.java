@@ -22,5 +22,7 @@ public class FeeRequest {
 	private int numberOfFees;
 	@Field(targetType = FieldType.DECIMAL128)
 	private BigDecimal amount;
+	@Field(targetType = FieldType.DECIMAL128)
+	private BigDecimal interestRate;
 
 }

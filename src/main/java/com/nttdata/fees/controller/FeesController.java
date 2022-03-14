@@ -1,17 +1,25 @@
 package com.nttdata.fees.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.TEXT_EVENT_STREAM_VALUE;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.nttdata.fees.dto.request.FeeRequest;
 import com.nttdata.fees.entity.Fee;
 import com.nttdata.fees.service.FeesService;
 
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,6 +41,27 @@ public class FeesController {
 	@GetMapping(value ="/list/clientDocumentNumber/{clientDocumentNumber}", produces = TEXT_EVENT_STREAM_VALUE)
 	public Flux<Fee> listByClientDocumentNumber(@PathVariable("clientDocumentNumber") String clientDocumentNumber){
 		return feesServices.listByClientDocumentNumber(clientDocumentNumber);
+	}
+	
+	@GetMapping(value ="/find/id/{id}")
+	public Mono<Fee> listByClientId(@PathVariable("id") String id){
+		return feesServices.findFeeById(id);
+	}
+	
+	@PostMapping("/create")
+	@ResponseStatus(CREATED)
+	Mono<Void> createFees(@RequestBody FeeRequest request){
+		return feesServices.createFees(request);
+	}
+	
+	@DeleteMapping("/delete")
+	Mono<Void> deleteFees(@RequestBody FeeRequest request){
+		return feesServices.deleteFees(request);
+	}
+	
+	@PutMapping("/update")
+	Mono<Void> updateFee(@RequestBody FeeRequest request){
+		return feesServices.updateFee(request);
 	}
 
 }
