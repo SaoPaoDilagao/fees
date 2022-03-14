@@ -1,10 +1,13 @@
 package com.nttdata.fees.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -22,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Document
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Fees {
+public class Fee {
 	@Id
 	@JsonSerialize(using = ToStringSerializer.class)
 	private ObjectId id;
@@ -31,6 +34,8 @@ public class Fees {
 	private String productNumber;
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDateTime expirationDate;
+	@Field(targetType = FieldType.DECIMAL128)
+	private BigDecimal amount;
 	private int status; 
 
 }
