@@ -36,20 +36,20 @@ class FeesApplicationTests {
 	void testListByIdTransaction() {
 		
 		Fee dummy1 = new Fee();
-		dummy1.setId(new ObjectId("1"));
+		//dummy1.setId(new ObjectId("1"));
 		dummy1.setIdTransaction("1");
 		dummy1.setProductNumber("00001");
 		dummy1.setAmount(new BigDecimal("100"));
-		dummy1.setExpirationDate(LocalDateTime.now().plusMonths(1));
+		//dummy1.setExpirationDate(LocalDateTime.now().plusMonths(1));
 		dummy1.setClientDocumentNumber("0123456");
 		dummy1.setStatus(0);
 		
 		Fee dummy2 = new Fee();
-		dummy2.setId(new ObjectId("2"));
+		//dummy2.setId(new ObjectId("2"));
 		dummy2.setIdTransaction("1");
 		dummy2.setProductNumber("00001");
 		dummy2.setAmount(new BigDecimal("100"));
-		dummy2.setExpirationDate(LocalDateTime.now().plusMonths(2));
+		//dummy2.setExpirationDate(LocalDateTime.now().plusMonths(2));
 		dummy1.setClientDocumentNumber("0123456");
 		dummy2.setStatus(0);
 		
@@ -57,7 +57,7 @@ class FeesApplicationTests {
 		
 		when(feesService.listByIdTransaction("1")).thenReturn(dummyFlux);
 		
-		Flux<Fee> responseBody = webTestClient.get().uri("/list/idTransaction/{idTransaction}","1")
+		var responseBody = webTestClient.get().uri("/fees/list/idTransaction/1")
 				.exchange()
 				.expectStatus().isOk()
 				.returnResult(Fee.class)
@@ -66,7 +66,7 @@ class FeesApplicationTests {
 		StepVerifier.create(responseBody)
 				.expectSubscription()
 				.expectNext(dummy1)
-				.expectNext(dummy1)
+				.expectNext(dummy2)
 				.verifyComplete();
 		
 	}
@@ -75,20 +75,20 @@ class FeesApplicationTests {
 	void testListByProductNumber() {
 		
 		Fee dummy1 = new Fee();
-		dummy1.setId(new ObjectId("1"));
+		//dummy1.setId(new ObjectId("1"));
 		dummy1.setIdTransaction("1");
 		dummy1.setProductNumber("00001");
 		dummy1.setAmount(new BigDecimal("100"));
-		dummy1.setExpirationDate(LocalDateTime.now().plusMonths(1));
+		//dummy1.setExpirationDate(LocalDateTime.now().plusMonths(1));
 		dummy1.setClientDocumentNumber("0123456");
 		dummy1.setStatus(0);
 		
 		Fee dummy2 = new Fee();
-		dummy2.setId(new ObjectId("2"));
+		//dummy2.setId(new ObjectId("2"));
 		dummy2.setIdTransaction("1");
 		dummy2.setProductNumber("00001");
 		dummy2.setAmount(new BigDecimal("100"));
-		dummy2.setExpirationDate(LocalDateTime.now().plusMonths(2));
+		//dummy2.setExpirationDate(LocalDateTime.now().plusMonths(2));
 		dummy1.setClientDocumentNumber("0123456");
 		dummy2.setStatus(0);
 		
@@ -96,7 +96,7 @@ class FeesApplicationTests {
 		
 		when(feesService.listByProductNumber("0001")).thenReturn(dummyFlux);
 		
-		Flux<Fee> responseBody = webTestClient.get().uri("/list/productNumber/{productNumber}","00001")
+		var responseBody = webTestClient.get().uri("/fees/list/productNumber/00001")
 				.exchange()
 				.expectStatus().isOk()
 				.returnResult(Fee.class)
@@ -105,7 +105,7 @@ class FeesApplicationTests {
 		StepVerifier.create(responseBody)
 				.expectSubscription()
 				.expectNext(dummy1)
-				.expectNext(dummy1)
+				.expectNext(dummy2)
 				.verifyComplete();
 		
 	}
@@ -118,7 +118,7 @@ class FeesApplicationTests {
 		dummy1.setIdTransaction("1");
 		dummy1.setProductNumber("00001");
 		dummy1.setAmount(new BigDecimal("100"));
-		dummy1.setExpirationDate(LocalDateTime.now().plusMonths(1));
+		//dummy1.setExpirationDate(LocalDateTime.now().plusMonths(1));
 		dummy1.setClientDocumentNumber("0123456");
 		dummy1.setStatus(0);
 		
@@ -127,7 +127,7 @@ class FeesApplicationTests {
 		dummy2.setIdTransaction("1");
 		dummy2.setProductNumber("00001");
 		dummy2.setAmount(new BigDecimal("100"));
-		dummy2.setExpirationDate(LocalDateTime.now().plusMonths(2));
+		//dummy2.setExpirationDate(LocalDateTime.now().plusMonths(2));
 		dummy1.setClientDocumentNumber("0123456");
 		dummy2.setStatus(0);
 		
@@ -135,7 +135,7 @@ class FeesApplicationTests {
 		
 		when(feesService.listByClientDocumentNumber("0123456")).thenReturn(dummyFlux);
 		
-		Flux<Fee> responseBody = webTestClient.get().uri("/list/clientDocumentNumber/{clientDocumentNumber}","0123456")
+		var responseBody = webTestClient.get().uri("/fees/list/clientDocumentNumber/0123456")
 				.exchange()
 				.expectStatus().isOk()
 				.returnResult(Fee.class)
@@ -144,7 +144,7 @@ class FeesApplicationTests {
 		StepVerifier.create(responseBody)
 				.expectSubscription()
 				.expectNext(dummy1)
-				.expectNext(dummy1)
+				.expectNext(dummy2)
 				.verifyComplete();
 		
 	}
