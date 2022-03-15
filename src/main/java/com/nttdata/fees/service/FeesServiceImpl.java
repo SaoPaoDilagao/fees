@@ -48,7 +48,7 @@ public class FeesServiceImpl implements FeesService{
 	public Mono<Void> deleteFees(String idTransaction) {
 		Flux<Fee> result = listByIdTransaction(idTransaction);
 		
-		List<ObjectId> ids = new ArrayList<ObjectId>();
+		List<ObjectId> ids = new ArrayList<>();
 		
 		result.flatMap(item -> {
 			
@@ -65,11 +65,11 @@ public class FeesServiceImpl implements FeesService{
 	}
 
 	@Override
-	public Mono<Void> createFees(FeeRequest request) {
+	public Flux<Fee> createFees(FeeRequest request) {
 		
 		Fee fee;
 		
-		List<Fee> feesList = new ArrayList<Fee>();
+		List<Fee> feesList = new ArrayList<>();
 		
 		int paymentdayOfFee = 26;
 		BigDecimal rateAmount = calculateRateAmount(request);
@@ -78,7 +78,7 @@ public class FeesServiceImpl implements FeesService{
 		for(int i=0; i<request.getNumberOfFees(); i++) {
 			fee = new Fee();
 			fee.setAmount(rateAmount);
-			fee.setExpirationDate(paymentBaseDate.plusMonths((long)(i+1)));
+			fee.setExpirationDate(paymentBaseDate.plusMonths(i+1));
 			fee.setClientDocumentNumber(request.getClientDocumentNumber());
 			fee.setIdTransaction(request.getIdTransaction());
 			fee.setProductNumber(request.getProductNumber());
@@ -87,9 +87,9 @@ public class FeesServiceImpl implements FeesService{
 			feesList.add(fee);
 		}
 		
-		feesRepository.saveAll(feesList);
+		return feesRepository.saveAll(feesList);
 		
-		return Mono.empty();
+		
 	}
 	
 	private BigDecimal calculateRateAmount(FeeRequest request) {
@@ -113,8 +113,7 @@ public class FeesServiceImpl implements FeesService{
 	}
 
 	@Override
-	public Mono<Void> updateFee(FeeRequest request) {
-		// TODO Auto-generated method stub
+	public Mono<Void> updateFee(FeeRequest request) {		
 		return null;
 	}
 

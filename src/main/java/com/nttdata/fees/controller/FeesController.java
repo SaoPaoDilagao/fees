@@ -50,7 +50,7 @@ public class FeesController {
 	
 	@PostMapping("/create")
 	@ResponseStatus(CREATED)
-	Mono<Void> createFees(@RequestBody FeeRequest request){
+	Flux<Fee> createFees(@RequestBody FeeRequest request){
 		return feesServices.createFees(request);
 	}
 	

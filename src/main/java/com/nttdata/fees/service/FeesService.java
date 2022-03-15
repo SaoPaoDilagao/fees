@@ -13,7 +13,7 @@ public interface FeesService {
 	Flux<Fee> listByClientDocumentNumber(String clientDocumentNumber);
 	Mono<Fee> findFeeById(String id);
 	Mono<Void> deleteFees(String idTransaction);
-	Mono<Void> createFees(FeeRequest request);
+	Flux<Fee> createFees(FeeRequest request);
 	Mono<Void> updateFee(FeeRequest request);
   	
 
