@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nttdata.fees.dto.request.FeeRequest;
+import com.nttdata.fees.dto.request.FilterRequest;
 import com.nttdata.fees.entity.Fee;
 import com.nttdata.fees.service.FeesService;
 
@@ -43,7 +44,12 @@ public class FeesController {
 		return feesServices.listByClientDocumentNumber(clientDocumentNumber);
 	}
 	
-	@GetMapping(value ="/find/id/{id}")
+	@GetMapping(value ="/listByProductAndIntervalDate", produces = TEXT_EVENT_STREAM_VALUE)
+	public Flux<Fee> listFeesByProductNumberAndDateInterval(@RequestBody FilterRequest request){
+		return feesServices.listFeesByProductNumberAndDateInterval(request);
+	}
+	
+	@GetMapping(value ="/find/{id}")
 	public Mono<Fee> listByClientId(@PathVariable("id") String id){
 		return feesServices.findFeeById(id);
 	}
@@ -55,13 +61,13 @@ public class FeesController {
 	}
 	
 	@DeleteMapping("/delete/{idTransaction}")
-	Mono<Void> deleteFees(@PathVariable("idTransaction") String idTransaction){
+	Flux<Fee> deleteFees(@PathVariable("idTransaction") String idTransaction){
 		return feesServices.deleteFees(idTransaction);
 	}
 	
-	@PutMapping("/update")
-	Mono<Void> updateFee(@RequestBody FeeRequest request){
-		return feesServices.updateFee(request);
+	@PutMapping("/update/{id}")
+	Mono<Fee> updateFee(@PathVariable("id") String id){
+		return feesServices.updateFee(id);
 	}
 
 }

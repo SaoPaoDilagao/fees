@@ -1,6 +1,8 @@
 package com.nttdata.fees.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import com.nttdata.fees.dto.request.FeeRequest;
+import com.nttdata.fees.dto.request.FilterRequest;
 import com.nttdata.fees.entity.Fee;
 import com.nttdata.fees.exceptions.custom.CustomNotFoundException;
 import com.nttdata.fees.repository.FeesRepository;
@@ -45,23 +48,18 @@ public class FeesServiceImpl implements FeesService{
 	}
 
 	@Override
-	public Mono<Void> deleteFees(String idTransaction) {
-		Flux<Fee> result = listByIdTransaction(idTransaction);
-		
+	public Flux<Fee> deleteFees(String idTransaction) {
 		List<ObjectId> ids = new ArrayList<>();
 		
-		result.flatMap(item -> {
-			
-			ids.add(item.getId());
-			
-			return Mono.empty();
-			
-		});
+		return listByIdTransaction(idTransaction)
+				.map( item ->{
+					ids.add(item.getId());
+					return item;
+				}).flatMap( doc -> {
+					feesRepository.deleteAllById(ids).subscribe();
+					return Mono.just(doc);
+				});
 		
-		
-		feesRepository.deleteAllById(ids);
-		
-		return Mono.empty();
 	}
 
 	@Override
@@ -95,28 +93,36 @@ public class FeesServiceImpl implements FeesService{
 	private BigDecimal calculateRateAmount(FeeRequest request) {
 		
 		BigDecimal singleAmount = request.getAmount()
-				.divide(new BigDecimal(request.getNumberOfFees()));
+				.divide(new BigDecimal(request.getNumberOfFees()),2, RoundingMode.HALF_DOWN);
 		BigDecimal singleInterest = singleAmount
 						.multiply(request.getPercentageInterestRate())
-						.divide(new BigDecimal("100.0"));
+						.divide(new BigDecimal("100.0"),2, RoundingMode.HALF_DOWN);
 		return singleAmount.add(singleInterest);
 	}
 	
 	private LocalDateTime calculateBaseDateRate(int paymentDay) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		LocalDateTime current = LocalDateTime.now();
-		current.format(formatter);
 		int month =  current.getMonthValue();
 		int year = current.getYear();
-		String temp = String.valueOf(paymentDay) +"/"+month+"/"+year;
-		return LocalDateTime.parse(temp,formatter);
+		String temp = paymentDay +"/"+String.format("%02d", month)+"/"+year; 
+		current = LocalDate.parse(temp,formatter).atStartOfDay();
+		return current;
 	}
 
 	@Override
-	public Mono<Void> updateFee(FeeRequest request) {		
-		return null;
+	public Mono<Fee> updateFee(String id) {		
+		return findFeeById(id)
+			.map(item ->{
+				item.setStatus(1); // paid
+				feesRepository.save(item).subscribe();
+				return item;
+			});
 	}
 
-	
-
+	@Override
+	public Flux<Fee> listFeesByProductNumberAndDateInterval(FilterRequest filterRequest) {
+		return feesRepository.listFeesByProductNumberAndDateInterval(filterRequest.getProductNumber(),
+				filterRequest.getStartDate(),filterRequest.getEndDate());
+	}
 }
