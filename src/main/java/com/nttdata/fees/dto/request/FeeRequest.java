@@ -24,5 +24,6 @@ public class FeeRequest {
 	private BigDecimal amount;
 	@Field(targetType = FieldType.DECIMAL128)
 	private BigDecimal percentageInterestRate;
+	private int monthlyFeeExpirationDay;
 
 }

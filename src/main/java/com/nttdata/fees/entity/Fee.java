@@ -1,7 +1,7 @@
 package com.nttdata.fees.entity;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -35,7 +35,7 @@ public class Fee {
 	private String productNumber;
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
-	private LocalDateTime expirationDate;
+	private LocalDate expirationDate;
 	@Field(targetType = FieldType.DECIMAL128)
 	private BigDecimal amount;
 	private int status; 

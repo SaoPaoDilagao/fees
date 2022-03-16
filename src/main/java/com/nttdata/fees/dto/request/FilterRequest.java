@@ -17,5 +17,4 @@ public class FilterRequest {
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private LocalDate endDate;
-
 }

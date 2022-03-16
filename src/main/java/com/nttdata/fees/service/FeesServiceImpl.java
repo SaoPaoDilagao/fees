@@ -3,7 +3,6 @@ package com.nttdata.fees.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +15,7 @@ import com.nttdata.fees.dto.request.FilterRequest;
 import com.nttdata.fees.entity.Fee;
 import com.nttdata.fees.exceptions.custom.CustomNotFoundException;
 import com.nttdata.fees.repository.FeesRepository;
+import com.nttdata.fees.utilities.Constants;
 
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
@@ -69,9 +69,8 @@ public class FeesServiceImpl implements FeesService{
 		
 		List<Fee> feesList = new ArrayList<>();
 		
-		int paymentdayOfFee = 26;
 		BigDecimal rateAmount = calculateRateAmount(request);
-		LocalDateTime paymentBaseDate = calculateBaseDateRate(paymentdayOfFee);
+		LocalDate paymentBaseDate = calculateBaseDateRate(request.getMonthlyFeeExpirationDay());
 				
 		for(int i=0; i<request.getNumberOfFees(); i++) {
 			fee = new Fee();
@@ -80,7 +79,7 @@ public class FeesServiceImpl implements FeesService{
 			fee.setClientDocumentNumber(request.getClientDocumentNumber());
 			fee.setIdTransaction(request.getIdTransaction());
 			fee.setProductNumber(request.getProductNumber());
-			fee.setStatus(0); // pending
+			fee.setStatus(Constants.FeeStatus.PENDING); 
 			
 			feesList.add(fee);
 		}
@@ -100,21 +99,20 @@ public class FeesServiceImpl implements FeesService{
 		return singleAmount.add(singleInterest);
 	}
 	
-	private LocalDateTime calculateBaseDateRate(int paymentDay) {
+	private LocalDate calculateBaseDateRate(int paymentDay) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		LocalDateTime current = LocalDateTime.now();
+		LocalDate current = LocalDate.now();
 		int month =  current.getMonthValue();
 		int year = current.getYear();
 		String temp = paymentDay +"/"+String.format("%02d", month)+"/"+year; 
-		current = LocalDate.parse(temp,formatter).atStartOfDay();
-		return current;
+		return LocalDate.parse(temp,formatter);
 	}
 
 	@Override
 	public Mono<Fee> updateFee(String id) {		
 		return findFeeById(id)
 			.map(item ->{
-				item.setStatus(1); // paid
+				item.setStatus(Constants.FeeStatus.PAYED); 
 				feesRepository.save(item).subscribe();
 				return item;
 			});

@@ -3,7 +3,7 @@ package com.nttdata.fees;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
@@ -14,10 +14,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-
 import com.nttdata.fees.controller.FeesController;
 import com.nttdata.fees.entity.Fee;
 import com.nttdata.fees.service.FeesService;
+import com.nttdata.fees.utilities.Constants;
 
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -36,22 +36,22 @@ class FeesApplicationTests {
 	void testListByIdTransaction() {
 		
 		Fee dummy1 = new Fee();
-		//dummy1.setId(new ObjectId("1"));
+		dummy1.setId(new ObjectId("623238284e26e51430f045bf"));
 		dummy1.setIdTransaction("1");
 		dummy1.setProductNumber("00001");
 		dummy1.setAmount(new BigDecimal("100"));
-		//dummy1.setExpirationDate(LocalDateTime.now().plusMonths(1));
+		dummy1.setExpirationDate(LocalDate.now().plusMonths(1));
 		dummy1.setClientDocumentNumber("0123456");
-		dummy1.setStatus(0);
+		dummy1.setStatus(Constants.FeeStatus.PENDING);
 		
 		Fee dummy2 = new Fee();
-		//dummy2.setId(new ObjectId("2"));
+		dummy2.setId(new ObjectId("623238284e26e51430f045bf"));
 		dummy2.setIdTransaction("1");
 		dummy2.setProductNumber("00001");
 		dummy2.setAmount(new BigDecimal("100"));
-		//dummy2.setExpirationDate(LocalDateTime.now().plusMonths(2));
+		dummy2.setExpirationDate(LocalDate.now().plusMonths(2));
 		dummy1.setClientDocumentNumber("0123456");
-		dummy2.setStatus(0);
+		dummy2.setStatus(Constants.FeeStatus.PENDING);
 		
 		Flux<Fee> dummyFlux = Flux.just(dummy1, dummy2);
 		
@@ -75,26 +75,26 @@ class FeesApplicationTests {
 	void testListByProductNumber() {
 		
 		Fee dummy1 = new Fee();
-		//dummy1.setId(new ObjectId("1"));
-		dummy1.setIdTransaction("1");
+		dummy1.setId(new ObjectId("623238284e26e51430f045bf"));
+		dummy1.setIdTransaction("623238284e26e51430f045bf");
 		dummy1.setProductNumber("00001");
 		dummy1.setAmount(new BigDecimal("100"));
-		//dummy1.setExpirationDate(LocalDateTime.now().plusMonths(1));
+		dummy1.setExpirationDate(LocalDate.now().plusMonths(1));
 		dummy1.setClientDocumentNumber("0123456");
-		dummy1.setStatus(0);
+		dummy1.setStatus(Constants.FeeStatus.PENDING);
 		
 		Fee dummy2 = new Fee();
-		//dummy2.setId(new ObjectId("2"));
+		dummy2.setId(new ObjectId("623238284e26e51430f045bf"));
 		dummy2.setIdTransaction("1");
 		dummy2.setProductNumber("00001");
 		dummy2.setAmount(new BigDecimal("100"));
-		//dummy2.setExpirationDate(LocalDateTime.now().plusMonths(2));
+		dummy2.setExpirationDate(LocalDate.now().plusMonths(2));
 		dummy1.setClientDocumentNumber("0123456");
-		dummy2.setStatus(0);
+		dummy2.setStatus(Constants.FeeStatus.PENDING);
 		
 		Flux<Fee> dummyFlux = Flux.just(dummy1, dummy2);
 		
-		when(feesService.listByProductNumber("0001")).thenReturn(dummyFlux);
+		when(feesService.listByProductNumber("00001")).thenReturn(dummyFlux);
 		
 		var responseBody = webTestClient.get().uri("/fees/list/productNumber/00001")
 				.exchange()
@@ -114,22 +114,22 @@ class FeesApplicationTests {
 	void testListByClientDocumentNumber() {
 		
 		Fee dummy1 = new Fee();
-		//dummy1.setId(new ObjectId("1"));
+		dummy1.setId(new ObjectId("623238284e26e51430f045bf"));
 		dummy1.setIdTransaction("1");
 		dummy1.setProductNumber("00001");
 		dummy1.setAmount(new BigDecimal("100"));
-		//dummy1.setExpirationDate(LocalDateTime.now().plusMonths(1));
+		dummy1.setExpirationDate(LocalDate.now().plusMonths(1));
 		dummy1.setClientDocumentNumber("0123456");
-		dummy1.setStatus(0);
+		dummy1.setStatus(Constants.FeeStatus.PENDING);
 		
 		Fee dummy2 = new Fee();
-		//dummy2.setId(new ObjectId("2"));
+		dummy2.setId(new ObjectId("623238284e26e51430f045bf"));
 		dummy2.setIdTransaction("1");
 		dummy2.setProductNumber("00001");
 		dummy2.setAmount(new BigDecimal("100"));
-		//dummy2.setExpirationDate(LocalDateTime.now().plusMonths(2));
+		dummy2.setExpirationDate(LocalDate.now().plusMonths(2));
 		dummy1.setClientDocumentNumber("0123456");
-		dummy2.setStatus(0);
+		dummy2.setStatus(Constants.FeeStatus.PENDING);
 		
 		Flux<Fee> dummyFlux = Flux.just(dummy1, dummy2);
 		
@@ -146,7 +146,5 @@ class FeesApplicationTests {
 				.expectNext(dummy1)
 				.expectNext(dummy2)
 				.verifyComplete();
-		
 	}
-	
 }
