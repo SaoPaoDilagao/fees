@@ -48,6 +48,7 @@ public class FeesController {
 	public Flux<Fee> listFeesByProductNumberAndDateInterval(@RequestBody FilterRequest request){
 		return feesServices.listFeesByProductNumberAndDateInterval(request);
 	}
+
 	
 	@GetMapping(value ="/find/{id}")
 	public Mono<Fee> listByClientId(@PathVariable("id") String id){

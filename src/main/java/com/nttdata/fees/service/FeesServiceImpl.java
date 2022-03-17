@@ -24,7 +24,7 @@ import reactor.core.publisher.Mono;
 @Service
 @RequiredArgsConstructor
 public class FeesServiceImpl implements FeesService{
-	private final FeesRepository feesRepository;
+    private final FeesRepository feesRepository;
 
 	@Override
 	public Flux<Fee> listByIdTransaction(String idTransaction) {
@@ -119,7 +119,7 @@ public class FeesServiceImpl implements FeesService{
 	}
 
 	@Override
-	public Flux<Fee> listFeesByProductNumberAndDateInterval(FilterRequest filterRequest) {
+    public Flux<Fee> listFeesByProductNumberAndDateInterval(FilterRequest filterRequest) {
 		return feesRepository.listFeesByProductNumberAndDateInterval(filterRequest.getProductNumber(),
 				filterRequest.getStartDate(),filterRequest.getEndDate());
 	}
