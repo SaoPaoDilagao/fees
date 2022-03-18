@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.nttdata.fees.dto.request.FeeRequest;
+import com.nttdata.fees.dto.request.FilterRequest;
 import com.nttdata.fees.entity.Fee;
 import com.nttdata.fees.repository.FeesRepository;
 import com.nttdata.fees.service.FeesServiceImpl;
@@ -235,7 +236,7 @@ public class FeesServiceTest {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		
 		Fee dummy1 = new Fee();
-		//dummy1.setId(new ObjectId("623238284e26e51430f045bf"));
+		dummy1.setId(new ObjectId("623238284e26e51430f045bf"));
 		dummy1.setIdTransaction("1");
 		dummy1.setProductNumber("00001");
 		dummy1.setAmount(new BigDecimal("525"));
@@ -244,17 +245,13 @@ public class FeesServiceTest {
 		dummy1.setStatus(Constants.FeeStatus.PENDING);
 		
 		Fee dummy2 = new Fee();
-		//dummy2.setId(new ObjectId("623238284e26e51430f045bf"));
+		dummy2.setId(new ObjectId("623238284e26e51430f045bf"));
 		dummy2.setIdTransaction("1");
 		dummy2.setProductNumber("00001");
 		dummy2.setAmount(new BigDecimal("525"));
 		dummy2.setExpirationDate(LocalDate.parse("27/05/2022",formatter));
 		dummy1.setClientDocumentNumber("0123456");
 		dummy2.setStatus(Constants.FeeStatus.PENDING);
-		
-		List<Fee> feesList = new ArrayList<>();
-		feesList.add(dummy1);
-		feesList.add(dummy2);
 		
 		Flux<Fee> dummyFlux = Flux.just(dummy1, dummy2);
 		
@@ -267,7 +264,7 @@ public class FeesServiceTest {
 		request.setPercentageInterestRate(new BigDecimal(5));
 		request.setMonthlyFeeExpirationDay(27);
 		
-		when(feesRepository.saveAll(feesList)).thenReturn(dummyFlux);
+		when(feesRepository.saveAll((List<Fee>)any())).thenReturn(dummyFlux);
 		
 		var result = feesServiceImpl.createFees(request);
 		
@@ -277,5 +274,75 @@ public class FeesServiceTest {
 			.expectNext(dummy1)
 			.expectNext(dummy2)
 			.verifyComplete();
+	}
+	
+	@Test
+	public void testUpdateFee() {
+		
+		Fee dummy1 = new Fee();
+		dummy1.setId(new ObjectId("623238284e26e51430f045bf"));
+		dummy1.setIdTransaction("1");
+		dummy1.setProductNumber("00001");
+		dummy1.setAmount(new BigDecimal("100"));
+		dummy1.setExpirationDate(LocalDate.now().plusMonths(1));
+		dummy1.setClientDocumentNumber("0123456");
+		dummy1.setStatus(Constants.FeeStatus.PAYED);
+		
+		String id = "623238284e26e51430f045bf";
+		
+		when(feesRepository.findById(new ObjectId(id))).thenReturn(Mono.just(dummy1));
+		
+		when(feesRepository.save(dummy1)).thenReturn(Mono.just(dummy1));
+		
+		var result = feesServiceImpl.updateFee(id);
+		
+		StepVerifier
+		.create(result)
+		.expectSubscription()
+		.expectNext(dummy1)
+		.verifyComplete();
+		
+	}
+	
+	@Test
+	public void testlListFeesByProductNumberAndDateInterval() {
+		
+		Fee dummy1 = new Fee();
+		dummy1.setId(new ObjectId("623238284e26e51430f045bf"));
+		dummy1.setIdTransaction("1");
+		dummy1.setProductNumber("00001");
+		dummy1.setAmount(new BigDecimal("100"));
+		dummy1.setExpirationDate(LocalDate.now().plusMonths(1));
+		dummy1.setClientDocumentNumber("0123456");
+		dummy1.setStatus(Constants.FeeStatus.PENDING);
+		
+		Fee dummy2 = new Fee();
+		dummy2.setId(new ObjectId("623238284e26e51430f045bf"));
+		dummy2.setIdTransaction("1");
+		dummy2.setProductNumber("00001");
+		dummy2.setAmount(new BigDecimal("100"));
+		dummy2.setExpirationDate(LocalDate.now().plusMonths(2));
+		dummy1.setClientDocumentNumber("0123456");
+		dummy2.setStatus(Constants.FeeStatus.PENDING);
+		
+		Flux<Fee> dummyFlux = Flux.just(dummy1, dummy2);
+		
+		FilterRequest filterReq = new FilterRequest();
+		filterReq.setProductNumber("00001");
+		filterReq.setStartDate(LocalDate.now());
+		filterReq.setEndDate(LocalDate.now().plusMonths(3));
+		
+		when(feesRepository.listFeesByProductNumberAndDateInterval(any(),any(),any())).thenReturn(dummyFlux);
+		
+		var result = feesServiceImpl.listFeesByProductNumberAndDateInterval(filterReq);
+		
+		StepVerifier
+		.create(result)
+		.expectSubscription()
+		.expectNext(dummy1)
+		.expectNext(dummy2)
+		.verifyComplete();
+		
+		
 	}
 }
