@@ -84,7 +84,8 @@ public class FeesServiceImpl implements FeesService{
 			feesList.add(fee);
 		}
 		
-		return feesRepository.saveAll(feesList);
+		Flux<Fee> result = feesRepository.saveAll(feesList);
+		return result;
 		
 		
 	}
