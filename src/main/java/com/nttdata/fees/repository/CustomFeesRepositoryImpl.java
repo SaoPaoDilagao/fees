@@ -17,7 +17,6 @@ public class CustomFeesRepositoryImpl  implements CustomFeesRepository{
 	
 	private final ReactiveMongoTemplate mongoTemplate;
 		
-
 	@Override
 	public Flux<Fee> listFeesByProductNumberAndDateInterval(String productNumber, LocalDate startDate,
 			LocalDate endDate) {

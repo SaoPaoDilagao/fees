@@ -3,6 +3,14 @@ package com.nttdata.fees.controller;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.TEXT_EVENT_STREAM_VALUE;
 
+import com.nttdata.fees.dto.request.FeeRequest;
+import com.nttdata.fees.dto.request.FilterRequest;
+
+import com.nttdata.fees.entity.Fee;
+import com.nttdata.fees.service.FeesService;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,12 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nttdata.fees.dto.request.FeeRequest;
-import com.nttdata.fees.dto.request.FilterRequest;
-import com.nttdata.fees.entity.Fee;
-import com.nttdata.fees.service.FeesService;
-
-import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -29,8 +31,11 @@ public class FeesController {
 	
 	private final FeesService feesServices;
 	
-	@GetMapping(value ="/list/idTransaction/{idTransaction}", produces = TEXT_EVENT_STREAM_VALUE)
-	public Flux<Fee> listFeesByIdTransaction(@PathVariable("idTransaction") String idTransaction){
+	@GetMapping(value ="/list/idTransaction/{idTransaction}", 
+			produces = TEXT_EVENT_STREAM_VALUE)
+	
+	public Flux<Fee> listFeesByIdTransaction
+    	(@PathVariable("idTransaction") String idTransaction){
 		return feesServices.listByIdTransaction(idTransaction);	
 	}
 	
