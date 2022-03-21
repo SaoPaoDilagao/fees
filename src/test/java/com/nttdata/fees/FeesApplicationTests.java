@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import org.bson.types.ObjectId;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -356,6 +357,29 @@ class FeesApplicationTests {
 		StepVerifier.create(responseBody)
 				.expectSubscription()
 				.expectNext(dummy1)
+				.verifyComplete();
+		
+	}
+	
+	@Test
+	public void testCheckIfExistFeesExpired(){
+		
+		String productNumber = "00001";
+		
+		when(feesService.checkIfExistFeesExpired(productNumber)).thenReturn(Mono.just(1L));
+		
+		var responseBody = webTestClient.get().uri("/fees//checkIfExistFeesExpired/{productNumber}",productNumber)
+				.exchange()
+				.expectStatus().isOk()
+				.returnResult(Long.class)
+				.getResponseBody();
+		
+		StepVerifier.create(responseBody)
+				.expectSubscription()
+				.consumeNextWith( data ->{
+					Assertions.assertNotNull(data);
+					Assertions.assertEquals(data, 1L);
+				})
 				.verifyComplete();
 		
 	}

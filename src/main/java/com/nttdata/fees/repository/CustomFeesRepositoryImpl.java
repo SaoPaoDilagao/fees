@@ -8,9 +8,11 @@ import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
 import com.nttdata.fees.entity.Fee;
+import com.nttdata.fees.utilities.Constants;
 
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 public class CustomFeesRepositoryImpl  implements CustomFeesRepository{
@@ -24,6 +26,13 @@ public class CustomFeesRepositoryImpl  implements CustomFeesRepository{
 		Query query = new Query(where("productNumber").is(productNumber)
 		        .and("expirationDate").gte(startDate).lt(endDate.plusDays(1)));
 		    return mongoTemplate.find(query, Fee.class);
+	}
+
+	@Override
+	public Mono<Long> countFeesExpired(String productNumber) {
+		Query query = new Query(where("productNumber").is(productNumber)
+        .and("expirationDate").lte(LocalDate.now()).and("status").is(Constants.FeeStatus.PENDING));
+		 return mongoTemplate.count(query, Fee.class);
 	}
 
 }
