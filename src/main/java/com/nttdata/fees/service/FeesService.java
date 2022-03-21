@@ -17,7 +17,7 @@ public interface FeesService {
 	Flux<Fee> createFees(FeeRequest request);
 	Mono<Fee> updateFee(String id);
 	Flux<Fee> listFeesByProductNumberAndDateInterval(FilterRequest filterRequest);
-	Mono<Long> checkIfExistFeesExpired(String productNumbe);
+	Mono<Boolean> checkIfExistFeesExpired(String productNumbe);
   	
 
 }

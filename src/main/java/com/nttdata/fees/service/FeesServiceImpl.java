@@ -119,7 +119,13 @@ public class FeesServiceImpl implements FeesService {
 	}
 
 	@Override
-	public Mono<Long> checkIfExistFeesExpired(String productNumber) {
-		return feesRepository.countFeesExpired(productNumber);
+	public Mono<Boolean> checkIfExistFeesExpired(String productNumber) {
+		return feesRepository.countFeesExpired(productNumber)
+				.flatMap(data ->{
+					if(data>0L)
+						return Mono.just(true);
+					else
+						return Mono.just(false);
+				});
 	}
 }

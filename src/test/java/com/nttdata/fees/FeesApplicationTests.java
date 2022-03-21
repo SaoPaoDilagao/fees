@@ -366,19 +366,19 @@ class FeesApplicationTests {
 		
 		String productNumber = "00001";
 		
-		when(feesService.checkIfExistFeesExpired(productNumber)).thenReturn(Mono.just(1L));
+		when(feesService.checkIfExistFeesExpired(productNumber)).thenReturn(Mono.just(true));
 		
 		var responseBody = webTestClient.get().uri("/fees//checkIfExistFeesExpired/{productNumber}",productNumber)
 				.exchange()
 				.expectStatus().isOk()
-				.returnResult(Long.class)
+				.returnResult(Boolean.class)
 				.getResponseBody();
 		
 		StepVerifier.create(responseBody)
 				.expectSubscription()
 				.consumeNextWith( data ->{
 					Assertions.assertNotNull(data);
-					Assertions.assertEquals(data, 1L);
+					Assertions.assertEquals(true, data);
 				})
 				.verifyComplete();
 		

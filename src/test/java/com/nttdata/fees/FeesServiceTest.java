@@ -344,7 +344,7 @@ public class FeesServiceTest {
 	}
 	
 	@Test
-	public void testCheckIfExistFeesExpired(){
+	public void testCheckIfExistFeesExpired_true(){
 		
 		String productNumber = "00001";
 		
@@ -356,7 +356,26 @@ public class FeesServiceTest {
 		.create(result)
 		.consumeNextWith( data ->{
 			Assertions.assertNotNull(data);
-			Assertions.assertEquals(data, 1L);
+			Assertions.assertEquals(true, data);
+		})
+		.verifyComplete();
+		
+	}
+	
+	@Test
+	public void testCheckIfExistFeesExpired_false(){
+		
+		String productNumber = "00001";
+		
+		given(feesRepository.countFeesExpired(productNumber)).willReturn(Mono.just(0L));
+		
+		var result = feesServiceImpl.checkIfExistFeesExpired(productNumber);
+		
+		StepVerifier
+		.create(result)
+		.consumeNextWith( data ->{
+			Assertions.assertNotNull(data);
+			Assertions.assertEquals(false, data);
 		})
 		.verifyComplete();
 		

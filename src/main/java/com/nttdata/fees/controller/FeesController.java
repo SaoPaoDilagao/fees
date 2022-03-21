@@ -77,7 +77,7 @@ public class FeesController {
 	}
 	
 	@GetMapping("/checkIfExistFeesExpired/{productNumber}")
-	Mono<Long> checkIfExistFeesExpired(@PathVariable("productNumber") String productNumber){
+	Mono<Boolean> checkIfExistFeesExpired(@PathVariable("productNumber") String productNumber){
 		return feesServices.checkIfExistFeesExpired(productNumber);
 	}
 
